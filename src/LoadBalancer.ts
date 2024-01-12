@@ -9,6 +9,7 @@ import { ConnectionWrapper } from "./connection/ConnectionWrapper";
 import { Query } from "./query/Query";
 import { NotSyncState } from "./connection/connectionStates/NotSyncState";
 import { QueryRepository } from "./query/QueryRepository";
+import { OfflineState } from "./connection/connectionStates/OfflineState";
 
 export class LoadBalancer {
   private strategy: Strategy;
@@ -21,6 +22,7 @@ export class LoadBalancer {
   ) {
     this.strategy = new RandomStrategy();
     this.changeStrategy(strategy);
+    this.runHealthCheck();
     connectionUrls.map((url) => this.initConnection(url, config));
   }
 
@@ -49,7 +51,7 @@ export class LoadBalancer {
     }
   }
 
-  public routeQuery(query: Query) {
+  public async routeQuery(query: Query) {
     const connection = this.strategy.pickNext(this.connections);
     if (query.type === "write") {
       this.connections.forEach((connection) => {
@@ -57,8 +59,20 @@ export class LoadBalancer {
           new NotSyncState(new QueryRepository(connection))
         );
       });
+
+      return { status: 200, message: "Database changed" };
     }
 
-    connection.handleQuery(query);
+    return await connection.handleQuery(query);
+  }
+
+  public async runHealthCheck() {
+    setInterval(() => {
+      this.connections.forEach(async (connection) => {
+        if (connection.state instanceof OfflineState) {
+          await connection.isActive();
+        }
+      });
+    }, 5000);
   }
 }

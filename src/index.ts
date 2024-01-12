@@ -16,10 +16,10 @@ const loadBalancer = new LoadBalancer(
   StrategyType.ROUND_ROBIN
 );
 
-app.post("/query", (req: Request, res: Response) => {
+app.post("/query", async (req: Request, res: Response) => {
   const { sql, type } = req.body;
-  loadBalancer.routeQuery({ sql, type });
-  res.send("Express + TypeScript Server");
+  const response: any = await loadBalancer.routeQuery({ sql, type });
+  res.send(response);
 });
 
 app.listen(port, () => {

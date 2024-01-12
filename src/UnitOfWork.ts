@@ -6,9 +6,15 @@ export class UnitOfWork {
 
   constructor(private context: ConnectionWrapper) {}
 
-  public begin(): void {}
+  public begin(): void {
+    this.context.connection.beginTransaction();
+  }
 
-  public commit(): void {}
+  public commit(): void {
+    this.context.connection.commit();
+  }
 
-  public rollback(): void {}
+  public rollback(): void {
+    this.context.connection.rollback();
+  }
 }
