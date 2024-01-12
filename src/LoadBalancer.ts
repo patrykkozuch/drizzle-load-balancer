@@ -9,6 +9,7 @@ import { ConnectionWrapper } from "./connection/ConnectionWrapper";
 import { Query } from "./query/Query";
 import { NotSyncState } from "./connection/connectionStates/NotSyncState";
 import { QueryRepository } from "./query/QueryRepository";
+import { OfflineState } from "./connection/connectionStates/OfflineState";
 
 export class LoadBalancer {
   private strategy: Strategy;
@@ -21,6 +22,7 @@ export class LoadBalancer {
   ) {
     this.strategy = new RandomStrategy();
     this.changeStrategy(strategy);
+    this.runHealthCheck();
     connectionUrls.map((url) => this.initConnection(url, config));
   }
 
@@ -60,5 +62,15 @@ export class LoadBalancer {
     }
 
     connection.handleQuery(query);
+  }
+
+  public async runHealthCheck() {
+    setInterval(() => {
+      this.connections.forEach(async (connection) => {
+        if (connection.state instanceof OfflineState) {
+          await connection.isActive();
+        }
+      });
+    }, 5000);
   }
 }

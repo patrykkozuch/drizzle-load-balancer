@@ -9,7 +9,7 @@ import { NotSyncState } from "./connectionStates/NotSyncState";
 
 export class ConnectionWrapper {
   public queue: Query[] = [];
-  private state: ConnectionState = new SyncState(new QueryRepository(this));
+  public state: ConnectionState = new SyncState(new QueryRepository(this));
   public unitOfWork: UnitOfWork = new UnitOfWork(this);
 
   constructor(public readonly connection: mysql.Connection) {}
@@ -24,13 +24,16 @@ export class ConnectionWrapper {
         this.transitionTo(new NotSyncState(new QueryRepository(this)));
       }
       this.queue.push(query);
-      this.state.handleQueue();
+      if (this.state instanceof NotSyncState) {
+        this.state.handleQueue();
+      }
 
       return;
     }
 
-    this.queue.push(query);
-    this.state.handleQuery(query);
+    if (this.state instanceof SyncState) {
+      this.state.handleQuery(query);
+    }
   }
 
   public async isActive(): Promise<void> {
@@ -39,8 +42,10 @@ export class ConnectionWrapper {
         sql: "SELECT 1;",
         timeout: 1000,
       });
+
+      this.transitionTo(new SyncState(new QueryRepository(this)));
     } catch (err) {
-      this.transitionTo(new OfflineState(new QueryRepository(this)));
+      this.transitionTo(new OfflineState());
     }
   }
 }
