@@ -10,6 +10,10 @@ export class RoundRobinStrategy implements Strategy {
       return connection.state instanceof SyncState;
     });
 
+    if (filteredConnections.length === 0) {
+      throw new Error("No connection available");
+    }
+
     this.lastValueId = (this.lastValueId + 1) % filteredConnections.length;
     const nextConnection = filteredConnections[this.lastValueId];
     return nextConnection;

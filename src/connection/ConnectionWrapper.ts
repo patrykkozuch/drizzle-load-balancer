@@ -26,6 +26,7 @@ export class ConnectionWrapper {
       this.queue.push(query);
       if (this.state instanceof NotSyncState) {
         this.state.handleQueue();
+        this.transitionTo(new SyncState(new QueryRepository(this)));
       }
 
       return;
