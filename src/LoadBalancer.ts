@@ -58,6 +58,7 @@ export class LoadBalancer {
         connection.transitionTo(
           new NotSyncState(new QueryRepository(connection))
         );
+        connection.handleQuery(query);
       });
 
       return { status: 200, message: "Database changed" };
