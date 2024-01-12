@@ -51,7 +51,7 @@ export class LoadBalancer {
     }
   }
 
-  public routeQuery(query: Query) {
+  public async routeQuery(query: Query) {
     const connection = this.strategy.pickNext(this.connections);
     if (query.type === "write") {
       this.connections.forEach((connection) => {
@@ -59,9 +59,11 @@ export class LoadBalancer {
           new NotSyncState(new QueryRepository(connection))
         );
       });
+
+      return { status: 200, message: "Database changed" };
     }
 
-    connection.handleQuery(query);
+    return await connection.handleQuery(query);
   }
 
   public async runHealthCheck() {

@@ -18,7 +18,7 @@ export class ConnectionWrapper {
     this.state = state;
   }
 
-  public handleQuery(query: Query): void {
+  public async handleQuery(query: Query): Promise<any> {
     if (query.type === "write") {
       if (this.state instanceof SyncState) {
         this.transitionTo(new NotSyncState(new QueryRepository(this)));
@@ -32,7 +32,7 @@ export class ConnectionWrapper {
     }
 
     if (this.state instanceof SyncState) {
-      this.state.handleQuery(query);
+      return await this.state.handleQuery(query);
     }
   }
 
