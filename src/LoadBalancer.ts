@@ -52,12 +52,22 @@ export class LoadBalancer {
   }
 
   public async routeQuery(query: Query) {
-    const connection = this.strategy.pickNext(this.connections);
+    let connection;
+    try {
+      connection = this.strategy.pickNext(this.connections);
+    } catch (e) {
+      return "No connection available";
+    }
     if (query.type === "write") {
       this.connections.forEach((connection) => {
         connection.transitionTo(
           new NotSyncState(new QueryRepository(connection))
         );
+        try {
+          connection.handleQuery(query);
+        } catch (e) {
+          return "Something went wrong";
+        }
       });
 
       return { status: 200, message: "Database changed" };
