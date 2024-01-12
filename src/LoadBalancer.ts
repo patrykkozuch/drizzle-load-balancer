@@ -52,8 +52,9 @@ export class LoadBalancer {
   }
 
   public async routeQuery(query: Query) {
+    let connection;
     try {
-      const connection = this.strategy.pickNext(this.connections);
+      connection = this.strategy.pickNext(this.connections);
     } catch (e) {
       return "No connection available";
     }
