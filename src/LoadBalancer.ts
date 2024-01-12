@@ -52,12 +52,6 @@ export class LoadBalancer {
   }
 
   public async routeQuery(query: Query) {
-    let connection;
-    try {
-      connection = this.strategy.pickNext(this.connections);
-    } catch (e) {
-      return "No connection available";
-    }
     if (query.type === "write") {
       this.connections.forEach((connection) => {
         connection.transitionTo(
@@ -73,7 +67,12 @@ export class LoadBalancer {
       return { status: 200, message: "Database changed" };
     }
 
-    return await connection.handleQuery(query);
+    try {
+      const connection = this.strategy.pickNext(this.connections);
+      return await connection.handleQuery(query);
+    } catch (e) {
+      return "No connection available";
+    }
   }
 
   public async runHealthCheck() {
