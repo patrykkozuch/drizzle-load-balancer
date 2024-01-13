@@ -6,15 +6,15 @@ export class UnitOfWork {
 
   constructor(private context: ConnectionWrapper) {}
 
-  public begin(): void {
-    this.context.connection.beginTransaction();
+  public async begin() {
+    await this.context.connection!.beginTransaction();
   }
 
-  public commit(): void {
-    this.context.connection.commit();
+  public async commit() {
+    await this.context.connection!.commit();
   }
 
-  public rollback(): void {
-    this.context.connection.rollback();
+  public async rollback() {
+    await this.context.connection!.rollback();
   }
 }
