@@ -6,16 +6,20 @@ export class RoundRobinStrategy implements Strategy {
   private lastValueId = 0;
 
   public pickNext(connections: ConnectionWrapper[]) {
-    const filteredConnections = connections.filter((connection) => {
-      return connection.state instanceof SyncState;
-    });
-
-    if (filteredConnections.length === 0) {
-      throw new Error("No connection available");
+    const connectionsLength = connections.length;
+    let i = (this.lastValueId + 1) % connectionsLength;
+    while (i !== this.lastValueId) {
+      if (connections[i].state instanceof SyncState) {
+        this.lastValueId = i;
+        return connections[i];
+      }
+      i = (i + 1) % connectionsLength;
     }
 
-    this.lastValueId = (this.lastValueId + 1) % filteredConnections.length;
-    const nextConnection = filteredConnections[this.lastValueId];
-    return nextConnection;
+    if (connections[this.lastValueId].state instanceof SyncState) {
+      return connections[this.lastValueId];
+    }
+    throw new Error("No connection available");
+
   }
 }

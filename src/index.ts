@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 const ports = [3301, 3302, 3303];
-const urls = ports.map(port => `mysql://dp_user:dp_password@localhost:${port}`);
+const urls = ports.map(port => `mysql://dp_user:dp_password@localhost:${port}/dp`);
 
 const loadBalancer = new LoadBalancer(
   urls,
