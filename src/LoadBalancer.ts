@@ -1,15 +1,15 @@
-import {ConnectionOptions} from "mysql2";
-import {StrategyType} from "./strategy/StrategyTypes";
-import {Strategy} from "./strategy/Strategy";
-import {RoundRobinStrategy} from "./strategy/strategies/RoundRobinStrategy";
-import {RandomStrategy} from "./strategy/strategies/RandomStrategy";
-import {FirstStrategy} from "./strategy/strategies/FirstStrategy";
+import { ConnectionOptions } from "mysql2";
+import { StrategyType } from "./strategy/StrategyTypes";
+import { Strategy } from "./strategy/Strategy";
+import { RoundRobinStrategy } from "./strategy/strategies/RoundRobinStrategy";
+import { RandomStrategy } from "./strategy/strategies/RandomStrategy";
+import { FirstStrategy } from "./strategy/strategies/FirstStrategy";
 import * as mysql from "mysql2/promise";
-import {ConnectionWrapper} from "./connection/ConnectionWrapper";
-import {Query} from "./query/Query";
-import {NotSyncState} from "./connection/connectionStates/NotSyncState";
-import {QueryRepository} from "./query/QueryRepository";
-import {OfflineState} from "./connection/connectionStates/OfflineState";
+import { ConnectionWrapper } from "./connection/ConnectionWrapper";
+import { Query } from "./query/Query";
+import { NotSyncState } from "./connection/connectionStates/NotSyncState";
+import { QueryRepository } from "./query/QueryRepository";
+import { OfflineState } from "./connection/connectionStates/OfflineState";
 
 export class LoadBalancer {
     private strategy: Strategy;
@@ -51,12 +51,12 @@ export class LoadBalancer {
                 try {
                     await connection.handleQuery(query);
                 } catch (e: any) {
-                    console.log(e.message)
-                    return {status: 200, message: "Something went wrong"};
+                    console.log("LoadBalancer Error with handleQuery: ", e)
+                    return { status: 200, message: "Something went wrong" };
                 }
             }
 
-            return {status: 200, message: "Database changed"};
+            return { status: 200, message: "Database changed" };
         }
 
         try {
@@ -64,7 +64,7 @@ export class LoadBalancer {
             console.log(connection.connection?.config.port)
             return await connection.handleQuery(query);
         } catch (e: any) {
-            console.log(e)
+            console.log("LoadBalancer Error with pickNext: ", e.message)
             return "No connection available";
         }
     }

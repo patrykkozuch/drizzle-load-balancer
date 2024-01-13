@@ -1,8 +1,8 @@
-import {Query} from "./Query";
-import {ConnectionWrapper} from "../connection/ConnectionWrapper";
+import { Query } from "./Query";
+import { ConnectionWrapper } from "../connection/ConnectionWrapper";
 
 export class QueryRepository {
-  constructor(public readonly connectionWrapper: ConnectionWrapper) {}
+  constructor(public readonly connectionWrapper: ConnectionWrapper) { }
 
   public async send(query: Query): Promise<any> {
     try {
@@ -10,6 +10,7 @@ export class QueryRepository {
         sql: query.sql,
       });
     } catch (e: any) {
+      console.log("QueryRepository Erorr: ", e.message);
       throw new Error(e.message);
     }
   }

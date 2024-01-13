@@ -1,12 +1,12 @@
 import * as mysql from "mysql2/promise";
-import {Query} from "../query/Query";
-import {ConnectionState} from "./ConnectionState";
-import {UnitOfWork} from "../UnitOfWork";
-import {SyncState} from "./connectionStates/SyncState";
-import {QueryRepository} from "../query/QueryRepository";
-import {OfflineState} from "./connectionStates/OfflineState";
-import {NotSyncState} from "./connectionStates/NotSyncState";
-import {ConnectionOptions} from "mysql2";
+import { Query } from "../query/Query";
+import { ConnectionState } from "./ConnectionState";
+import { UnitOfWork } from "../UnitOfWork";
+import { SyncState } from "./connectionStates/SyncState";
+import { QueryRepository } from "../query/QueryRepository";
+import { OfflineState } from "./connectionStates/OfflineState";
+import { NotSyncState } from "./connectionStates/NotSyncState";
+import { ConnectionOptions } from "mysql2";
 
 export class ConnectionWrapper {
     public queue: Query[] = [];
