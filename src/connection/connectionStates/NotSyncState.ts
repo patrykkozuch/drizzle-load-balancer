@@ -4,10 +4,9 @@ import { ConnectionState } from "../ConnectionState";
 
 export class NotSyncState implements ConnectionState {
   private previousQuery: Query[] = [];
-  constructor(private queryRepository: QueryRepository) { }
+  constructor(private queryRepository: QueryRepository) {}
 
   public async handleQueue(): Promise<void> {
-    // console.log(this)
     this.previousQuery = [];
     await this.queryRepository.connectionWrapper.unitOfWork.begin();
     try {
@@ -19,11 +18,16 @@ export class NotSyncState implements ConnectionState {
 
       await this.queryRepository.connectionWrapper.unitOfWork.commit();
     } catch (err: any) {
-      console.log("NotSyncState Error:", err.message);
-      if (err.message.includes("Can't add new command when connection is in closed state")) {
-        this.queryRepository.connectionWrapper.queue = this.previousQuery.concat(this.queryRepository.connectionWrapper.queue);
-      }
-      else {
+      if (
+        err.message.includes(
+          "Can't add new command when connection is in closed state"
+        )
+      ) {
+        this.queryRepository.connectionWrapper.queue =
+          this.previousQuery.concat(
+            this.queryRepository.connectionWrapper.queue
+          );
+      } else {
         await this.queryRepository.connectionWrapper.unitOfWork.commit();
         await this.handleQueue();
         return;
