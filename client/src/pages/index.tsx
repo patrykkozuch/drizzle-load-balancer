@@ -14,6 +14,11 @@ export default function Home() {
       const rows = await axios.post("http://localhost:4000/query", {
         sql: params[0],
       });
+
+      if (rows.data == "No connection available") {
+        alert(rows.data);
+        return { rows: [] };
+      }
       if (rows.data.message) {
         alert(rows.data.message);
         return { rows: [] };
