@@ -11,7 +11,7 @@ export class RandomStrategy implements Strategy {
     if (filteredConnections.length === 0) {
       throw new Error("No connection available");
     }
-    const nextConnection = filteredConnections[Math.random() * connections.length];
+    const nextConnection = filteredConnections[Math.floor(Math.random() * connections.length)];
     return nextConnection;
   }
 }

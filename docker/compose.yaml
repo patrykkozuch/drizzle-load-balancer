@@ -1,11 +1,4 @@
 services:
-#  web:
-#    build: .
-#    ports:
-#      - "8000:80
-
-
-
   db_1:
     image: 'mysql:latest'
     env_file:

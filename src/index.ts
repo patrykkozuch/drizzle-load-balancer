@@ -28,7 +28,7 @@ const allowedOperations = [
   "use",
 ];
 
-const loadBalancer = new LoadBalancer(urls, {}, StrategyType.ROUND_ROBIN);
+const loadBalancer = new LoadBalancer(urls, {}, StrategyType.RANDOM);
 
 app.post("/query", async (req: Request, res: Response) => {
   const { sql } = req.body;
