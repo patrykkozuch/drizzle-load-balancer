@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { drizzle } from "drizzle-orm/sqlite-proxy";
@@ -11,6 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const db = drizzle(async (sql, params, method): Promise<any> => {
     try {
+      console.log("sql", sql);
       const rows = await axios.post("http://localhost:4000/query", {
         sql: params[0],
       });
