@@ -1,11 +1,6 @@
-networks:
-  dp-network:
-
 services:
   proxy:
     image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:proxy'
-    networks:
-      - dp-network
     container_name: proxy
     ports:
       - "4000:4000"
@@ -16,8 +11,6 @@ services:
   client:
     image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:client'
     container_name: client
-    networks:
-      - dp-network
     ports:
       - "80:3000"
     build:
@@ -108,8 +101,6 @@ services:
       - db_10:/var/lib/mysql
 
 volumes:
-    client_data:
-    proxy_data:
     db_1:
     db_2:
     db_3:
