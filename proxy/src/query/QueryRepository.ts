@@ -12,6 +12,14 @@ export class QueryRepository {
       );
       return await this.connectionWrapper.connection!.query({
         sql: query.sql,
+        values: query.params,
+        rowsAsArray: query.method === 'all',
+        typeCast: function(field: any, next: any) {
+          if (field.type === 'TIMESTAMP' || field.type === 'DATETIME' || field.type === 'DATE') {
+            return field.string();
+          }
+          return next();
+        },
       });
     } catch (e: any) {
       Logger.error("QueryRepository Erorr: " + e.message);

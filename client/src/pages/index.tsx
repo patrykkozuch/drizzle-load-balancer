@@ -1,35 +1,21 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { drizzle } from "drizzle-orm/sqlite-proxy";
-import axios from "axios";
+import {MySqlRawQueryResult} from "drizzle-orm/mysql-proxy";
 import React from "react";
+import {users} from "@/schema";
+import {db} from "@/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
-  const db = drizzle(async (sql, params, method): Promise<any> => {
-    try {
-      console.log("sql", sql);
-      const rows = await axios.post("http://localhost:4000/query", {
-        sql: params[0],
-      });
 
-      if (rows.data == "No connection available") {
-        alert(rows.data);
-        return { rows: [] };
-      }
-      if (rows.data.message) {
-        alert(rows.data.message);
-        return { rows: [] };
-      } else {
-        alert(JSON.stringify(rows.data[0]));
-      }
-      return { rows: rows.data[0] };
-    } catch (err) {
-      return { rows: [] };
-    }
-  });
+export type NewUser = typeof users.$inferInsert; // insert type
+
+
+export default function Home() {
+  async function insertUser(user: NewUser): Promise<MySqlRawQueryResult> {
+    return db.insert(users).values(user);
+  }
 
   return (
     <>
@@ -47,51 +33,7 @@ export default function Home() {
             className={styles.card}
             style={{ cursor: "pointer" }}
             onClick={async () => {
-              const result = await db.select().from("USE dp;" as any);
-            }}
-          >
-            <h2>
-              USE <span>-&gt;</span>
-            </h2>
-          </div>
-
-          <div
-            className={styles.card}
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              const result = await db
-                .select()
-                .from(
-                  "CREATE TABLE et ( id INT PRIMARY KEY NOT NULL AUTO_INCREMENT);" as any
-                );
-            }}
-          >
-            <h2>
-              CREATE <span>-&gt;</span>
-            </h2>
-          </div>
-
-          <div
-            className={styles.card}
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              const result = await db
-                .select()
-                .from("DROP TABLE IF EXISTS et;" as any);
-            }}
-          >
-            <h2>
-              DROP <span>-&gt;</span>
-            </h2>
-          </div>
-
-          <div
-            className={styles.card}
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              const result = await db
-                .select()
-                .from("INSERT INTO et VALUES(NULL);" as any);
+              const result = await insertUser({fullName: 'John Doe'})
             }}
           >
             <h2>
@@ -103,7 +45,7 @@ export default function Home() {
             className={styles.card}
             style={{ cursor: "pointer" }}
             onClick={async () => {
-              const result = await db.select().from("SELECT * FROM et" as any);
+              const result = await db.select().from(users);
             }}
           >
             <h2>

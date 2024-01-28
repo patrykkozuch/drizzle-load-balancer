@@ -2,6 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^1.6.5",
+    "drizzle-kit": "^0.20.13",
     "drizzle-orm": "^0.29.3",
     "next": "14.0.4",
     "react": "^18",

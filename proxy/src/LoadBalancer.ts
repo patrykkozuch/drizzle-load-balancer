@@ -13,7 +13,7 @@ import { Logger } from "./Logger";
 
 export class LoadBalancer {
   private strategy: Strategy;
-  private connections: ConnectionWrapper[] = [];
+  private readonly connections: ConnectionWrapper[] = [];
 
   constructor(
     connectionUrls: string[],
@@ -54,7 +54,7 @@ export class LoadBalancer {
           await connection.handleQuery(query);
         } catch (e: any) {
           Logger.error("LoadBalancer Error with handleQuery: " + e);
-          return { status: 200, message: "Something went wrong" };
+          return { status: 500, message: e };
         }
       }
 
@@ -66,7 +66,7 @@ export class LoadBalancer {
       return await connection.handleQuery(query);
     } catch (e: any) {
       Logger.error("LoadBalancer Error with pickNext: " + e.message);
-      return "No connection available";
+      return { status: 500, message: "No connection available" };
     }
   }
 
