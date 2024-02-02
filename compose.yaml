@@ -5,16 +5,26 @@ services:
     ports:
       - "4000:4000"
     build:
-      context: /proxy
+      context: proxy
       dockerfile: Dockerfile
 
   client:
     image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:client'
     container_name: client
+    entrypoint:
+      [
+        "npx",
+        "tsx",
+        "src/migrate.ts",
+        "&",
+        "npm",
+        "run",
+        "dev"
+      ]
     ports:
       - "80:3000"
     build:
-      context: /client
+      context: client
       dockerfile: Dockerfile
     depends_on:
       - proxy
@@ -45,6 +55,6 @@ services:
       - db_3:/var/lib/mysql
 
 volumes:
-    db_1:
-    db_2:
-    db_3:
+  db_1:
+  db_2:
+  db_3:

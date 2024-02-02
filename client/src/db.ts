@@ -1,4 +1,4 @@
-import {drizzle} from "drizzle-orm/mysql-proxy";
+import { drizzle } from "drizzle-orm/mysql-proxy";
 import axios from "axios";
 
 export const db = drizzle(async (sql, params, method): Promise<any> => {
@@ -19,6 +19,27 @@ export const db = drizzle(async (sql, params, method): Promise<any> => {
             return { rows: [] };
         } else {
             alert(JSON.stringify(rows.data[0]));
+        }
+        return { rows: rows.data[0] };
+    } catch (err) {
+        return { rows: [] };
+    }
+});
+
+export const _db = drizzle(async (sql, params, method): Promise<any> => {
+    try {
+        console.log("sql", sql);
+        const rows = await axios.post("http://localhost:4000/query", {
+            sql: sql,
+            params: params,
+            method: method,
+        });
+
+        if (rows.data == "No connection available") {
+            return { rows: [] };
+        }
+        if (rows.data.message) {
+            return { rows: [] };
         }
         return { rows: rows.data[0] };
     } catch (err) {

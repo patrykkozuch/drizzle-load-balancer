@@ -4,7 +4,7 @@ import { LoadBalancer } from "./LoadBalancer";
 import { StrategyType } from "./strategy/StrategyTypes";
 import { Logger } from "./Logger";
 import cors from "cors";
-import {BeginQuery, CommitQuery, RollbackQuery} from "./query/Query";
+import { BeginQuery, CommitQuery, RollbackQuery } from "./query/Query";
 
 dotenv.config();
 
@@ -23,7 +23,8 @@ const loadBalancer = new LoadBalancer(urls, {}, StrategyType.ROUND_ROBIN);
 
 app.post("/query", async (req: Request, res: Response) => {
   const { sql, params, method } = req.body;
-  console.log(req.body)
+  console.log("Req.body: ", req.body)
+  console.log("sql: ", sql, " params: ", params, " method: ", method)
   // prevent multiple queries
   const sqlBody = sql.replace(/;/g, '');
 
@@ -33,7 +34,7 @@ app.post("/query", async (req: Request, res: Response) => {
   Logger.info(`Executing query: ${sqlBody}`);
 
   const response: any = await loadBalancer.routeQuery({ sql: sqlBody, params, method, type });
-
+  console.log("response: ", response)
   if (method === 'all') {
     res.send(response);
     return
@@ -52,7 +53,7 @@ app.post('/migrate', async (req, res) => {
 
   try {
     for (const query of queries) {
-        await loadBalancer.routeQuery({ sql: query, params: [], method: 'execute', type: 'write' })
+      await loadBalancer.routeQuery({ sql: query, params: [], method: 'execute', type: 'write' })
     }
     await loadBalancer.routeQuery(CommitQuery)
   } catch {

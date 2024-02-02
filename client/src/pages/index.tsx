@@ -1,10 +1,12 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import {MySqlRawQueryResult} from "drizzle-orm/mysql-proxy";
+import { MySqlRawQueryResult } from "drizzle-orm/mysql-proxy";
 import React from "react";
-import {users} from "@/schema";
-import {db} from "@/db";
+import { users } from "@/schema";
+import { db } from "@/db";
+import { _db } from "@/db";
+import { eq } from "drizzle-orm";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +35,7 @@ export default function Home() {
             className={styles.card}
             style={{ cursor: "pointer" }}
             onClick={async () => {
-              const result = await insertUser({fullName: 'John Doe'})
+              const result = await insertUser({ fullName: 'John Doe' })
             }}
           >
             <h2>
@@ -50,6 +52,43 @@ export default function Home() {
           >
             <h2>
               SELECT <span>-&gt;</span>
+            </h2>
+          </div>
+
+          <div
+            className={styles.card}
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              let userInput = window.prompt('Enter the id of the user to search');
+              if (!userInput) {
+                alert('Invalid input');
+                return;
+              }
+              const selected_id = Number.parseInt(userInput);
+              const newName = window.prompt('Enter the new name') || '';
+              const result = await await db.update(users).set({ fullName: newName }).where(eq(users.id, selected_id));
+            }}
+          >
+            <h2>
+              UPDATE <span>-&gt;</span>
+            </h2>
+          </div>
+
+          <div
+            className={styles.card}
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              let userInput = window.prompt('Enter the id of the user to search');
+              if (!userInput) {
+                alert('Invalid input');
+                return;
+              }
+              const selected_id = Number.parseInt(userInput);
+              const result = await db.delete(users).where(eq(users.id, selected_id));
+            }}
+          >
+            <h2>
+              DELETE <span>-&gt;</span>
             </h2>
           </div>
         </div>
