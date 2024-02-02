@@ -16,13 +16,13 @@ app.use(express.json());
 
 const ports = [3301, 3302, 3303];
 const urls = ports.map(
-  (port) => `mysql://dp_user:dp_password@localhost:${port}/dp`
+  (port, index) => `mysql://dp_user:dp_password@db_${index + 1}:3306/dp`
 );
 
 const loadBalancer = new LoadBalancer(urls, {}, StrategyType.ROUND_ROBIN);
 
 app.get("/health", async (req: Request, res: Response) => {
-    res.send("OK");
+  res.send("OK");
 });
 
 app.post("/query", async (req: Request, res: Response) => {
