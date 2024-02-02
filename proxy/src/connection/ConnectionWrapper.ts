@@ -37,6 +37,7 @@ export class ConnectionWrapper {
       Logger.info(`Connected to database on port: ${this.port}`);
       this.setInitialState();
     } catch (e) {
+      console.log(e);
       this.state = new OfflineState();
     }
   }

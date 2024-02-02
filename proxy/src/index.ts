@@ -21,6 +21,10 @@ const urls = ports.map(
 
 const loadBalancer = new LoadBalancer(urls, {}, StrategyType.ROUND_ROBIN);
 
+app.get("/health", async (req: Request, res: Response) => {
+    res.send("OK");
+});
+
 app.post("/query", async (req: Request, res: Response) => {
   const { sql, params, method } = req.body;
   console.log("Req.body: ", req.body)

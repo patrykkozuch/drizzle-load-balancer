@@ -72,6 +72,7 @@ export class LoadBalancer {
 
   public async runHealthCheck() {
     setInterval(() => {
+      console.log("Running health check");
       const promises: Promise<void>[] = [];
       this.connections.forEach((connection) => {
         const promise = async () => {

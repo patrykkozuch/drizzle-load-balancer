@@ -6,6 +6,8 @@ COPY . /app
 
 RUN npm install
 
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
