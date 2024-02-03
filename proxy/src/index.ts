@@ -51,6 +51,7 @@ app.post("/query", async (req: Request, res: Response) => {
 });
 
 app.post('/migrate', async (req, res) => {
+  console.log("Migration request received", req.body);
   const { queries } = req.body;
 
   await loadBalancer.routeQuery(BeginQuery)

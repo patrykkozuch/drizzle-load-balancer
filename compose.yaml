@@ -14,7 +14,7 @@ services:
       - db_2
       - db_3
     networks:
-      - app_network
+      - load_balancer
 
   client:
     image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:client'
@@ -26,9 +26,10 @@ services:
       context: client
       dockerfile: Dockerfile
     depends_on:
-      - proxy
+      proxy:
+        condition: service_healthy
     networks:
-      - app_network
+      - load_balancer
 
   db_1:
     image: 'mysql:latest'
@@ -39,7 +40,7 @@ services:
     volumes:
       - db_1:/var/lib/mysql
     networks:
-      - app_network
+      - load_balancer
 
   db_2:
     image: 'mysql:latest'
@@ -50,7 +51,7 @@ services:
     volumes:
       - db_2:/var/lib/mysql
     networks:
-      - app_network
+      - load_balancer
 
   db_3:
     image: 'mysql:latest'
@@ -61,7 +62,7 @@ services:
     volumes:
       - db_3:/var/lib/mysql
     networks:
-      - app_network
+      - load_balancer
 
 volumes:
   db_1:
@@ -70,5 +71,5 @@ volumes:
 
 
 networks:
-  app_network:
+  load_balancer:
     driver: bridge
