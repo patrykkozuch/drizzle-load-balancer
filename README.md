@@ -11,6 +11,11 @@
 
 Our project focuses on creating a Load Balancer in JavaScript/TypeScript, designed to distribute traffic among multiple equivalent databases. This application ensures data integrity across these databases, providing a robust solution for handling database queries efficiently.
 
+This project is not a fully working load balancer - it is a proof of concept of how it the Drizzle's proxy can be use to implement load balancing features.
+
+## Purpose of the project
+The main purpose was to implement load balancing feature which balances read queries across multiple databases using different strategies, but in the same time keeps the data synchronised between different databases with some fail-safe features.  
+
 ## Technologies
 
 We utilized the following technologies to develop our Load Balancer application:
