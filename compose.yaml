@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   proxy:
-    image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:proxy'
     container_name: proxy
     ports:
       - "4000:4000"
@@ -17,7 +16,6 @@ services:
       - load_balancer
 
   client:
-    image: 'registry.gitlab.com/norbertklockiewicz/designpatterns:client'
     container_name: client
     entrypoint: /app/entrypoint.sh
     ports:
